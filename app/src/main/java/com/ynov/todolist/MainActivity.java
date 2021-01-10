@@ -1,6 +1,5 @@
 package com.ynov.todolist;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,19 +34,21 @@ public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton buttonNewTodo;
     ListView listView;
-
-    ArrayList<String> arrayList = new ArrayList<>();
+    ArrayList<String> arrayList = new ArrayList<String>();
     ArrayAdapter<String> arrayAdapter;
 
+    //DatabaseReference fireRef;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("msg");
 
 
-    @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listView = findViewById(R.id.listview);
         buttonNewTodo = findViewById(R.id.buttonNewTodo);
+        //fireRef = FirebaseDatabase.getInstance().getReference();
 
         /** Floating Button pour changer d'activitée, pointage vers sur MainActivity2  */
         buttonNewTodo.setOnClickListener(new View.OnClickListener() {
@@ -58,75 +59,32 @@ public class MainActivity extends AppCompatActivity {
             }
         }); // END setOnClickListener
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference text = database.getReference().child("todo");
+        arrayAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1,
+                arrayList);
 
-        ArrayAdapter<String> tableau =
-                new ArrayAdapter<String>(listView.getContext(),
-                        R.layout.text_field, R.id.textView,
-                        arrayList);
+        listView.setAdapter(arrayAdapter);
 
-        listView.setAdapter(tableau);
-
-        text.addChildEventListener(new ChildEventListener() {
+        /** Lecture et affichage du contenu de la base de données */
+        //fireRef.addValueEventListener(new ValueEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Todo todoClass = (Todo) dataSnapshot.getValue(Todo.class);
-                 String todoString = String.valueOf(todoClass);
-
-                arrayAdapter.add(todoString);
-                Log.w(TAG,"onChildAdded - " + todoString);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class);
+                Log.d(TAG, "Value is: " + value);
+                /*
+                String todoString = dataSnapshot.getValue(Todo.class).toString();
+                //String todoString = todo.msg;
+                arrayList.add(todoString);
+                arrayAdapter.notifyDataSetChanged();*/
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w(TAG, "Failed to read value.", databaseError.toException());
 
             }
-
-
         });
-
-
-        /*
-        // Read from the database
-        text.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-
-                ArrayAdapter<String> tableau =
-                        new ArrayAdapter<String>(listView.getContext(),
-                                R.layout.text_field, R.id.textView,
-                                arrayList);
-
-
-
-                listView.setAdapter(tableau);
-
-                Log.d(TAG, "onDataChange - Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-                // Failed to read value
-        }); // END addValueEventListener*/
 
         Log.w(TAG,"onCreate");
     } // END onCreate
@@ -134,163 +92,3 @@ public class MainActivity extends AppCompatActivity {
 
 
 } // END MainActivity
-
-        /*
-        items = new ArrayList<>();
-        //itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
-        listView.setAdapter(bundle);
-        setUpListViewListener();
-}
-
-    private void setUpListViewListener() {
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Context context = getApplicationContext();
-                Toast.makeText(context, "Item removed", Toast.LENGTH_LONG).show();
-
-                items.remove(i);
-                //itemsAdapter.notifyDataSetChanged();
-                return true;
-            }
-        });
-    }
-
-    public void addList(View view){
-        EditText textNewList = findViewById(R.id.textNewList);
-        String itemsText = textNewList.getText().toString();
-
-        if(!(itemsText.equals(" "))){
-            //itemsAdapter.add(itemsText);
-            textNewList.setText("");
-        }
-        else{
-            Toast.makeText(getApplicationContext(),"Please enter text..", Toast.LENGTH_LONG).show();
-        }
-    }
-
-
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*    Button ButtonNewList;
-    ListView listView;
-    ArrayList<String> items;
-    ArrayAdapter<String> itemsAdapter;
-    /*ArrayList<String> items;
-    ArrayAdapter<String> itemsAdapter;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        listView = findViewById(R.id.listView);
-        ButtonNewList = findViewById(R.id.ButtonNewList);
-
-
-        ButtonNewList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addList(view);
-            }
-        });
-
-        items = new ArrayList<>();
-        itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
-        listView.setAdapter(itemsAdapter);
-        setUpListViewListener();
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(MainActivity.this, "clicked item: " + i + " " + itemsAdapter.getItem(i).toString(), Toast.LENGTH_SHORT).show();
-                Intent MainActivity2 = new Intent(MainActivity.this, MainActivity2.class);
-                startActivity(MainActivity2);
-            }
-        });
-
-
-        // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
-
-        myRef.setValue("Hello, World!");
-
-        // Read from the database
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                Log.d(TAG, "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
-
-    }
-
-
-    private void setUpListViewListener() {
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Context context = getApplicationContext();
-                Toast.makeText(context, "Item removed", Toast.LENGTH_LONG).show();
-
-                items.remove(i);
-                itemsAdapter.notifyDataSetChanged();
-                return true;
-            }
-        });
-    }
-
-    public void addList(View view){
-        EditText textNewList = findViewById(R.id.textNewList);
-        String itemsText = textNewList.getText().toString();
-
-        if(!(itemsText.equals(" "))){
-            itemsAdapter.add(itemsText);
-            textNewList.setText("");
-        }
-        else{
-            Toast.makeText(getApplicationContext(),"Please enter text..", Toast.LENGTH_LONG).show();
-        }
-    }
-}
-
-*/

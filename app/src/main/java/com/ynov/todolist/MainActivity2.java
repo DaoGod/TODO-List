@@ -33,6 +33,7 @@ public class MainActivity2 extends AppCompatActivity {
         buttonReturn = findViewById(R.id.buttonReturn);
         buttonAddTodo = findViewById(R.id.buttonAddTodo);
 
+        /** Le bouton retour */
         buttonReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,6 +43,9 @@ public class MainActivity2 extends AppCompatActivity {
             }
         });
 
+        /** Le bouton d'ecriture de la base + affiche d'un Pain Grillé pour confirmé l'écriture
+            + retour sur la MainActivity
+         */
         buttonAddTodo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,7 +58,7 @@ public class MainActivity2 extends AppCompatActivity {
 
 
 public void addList(View view){
-
+        /** Fonction qui envoie le text a Firebase et test si le champs est vide */
         EditText textNewList = findViewById(R.id.textNewList);
         String itemsText = textNewList.getText().toString();
 
@@ -62,10 +66,16 @@ public void addList(View view){
 
             // Write a message to the database
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference text = database.getReference("todo");
+            DatabaseReference text = database.getReference("msg");
 
+            // Pain Grillé de confirmation
+            Toast.makeText(getApplicationContext(),"ToDo Sauvée", Toast.LENGTH_LONG).show();
             text.setValue(itemsText);
+            // Retour sur la MainActivity
+            Intent MainActivity = new Intent(MainActivity2.this, MainActivity.class);
+            startActivity(MainActivity);
         }
+
         else{
             Toast.makeText(getApplicationContext(),"Please enter text..", Toast.LENGTH_LONG).show();
         }
