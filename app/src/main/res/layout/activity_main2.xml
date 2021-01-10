@@ -7,7 +7,7 @@
     tools:context=".MainActivity2">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/buttonAddTodo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="ajouter"
@@ -15,20 +15,20 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/textNewList"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button"
+        app:layout_constraintEnd_toStartOf="@+id/buttonAddTodo"
         app:layout_constraintStart_toStartOf="parent" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/button" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonAddTodo" />
 
 
     <View
@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonReturn" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,16 +51,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ListView
-            android:id="@+id/listView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/buttonReturn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Retour"
